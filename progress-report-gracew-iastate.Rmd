@@ -18,12 +18,18 @@ library(dplyr)
 url <- "https://www.baseball-reference.com/awards/hof_2025.shtml"
 html <- read_html(url)
 newdata <- html %>% html_table(fill=TRUE)
-newdata
+head(newdata)
 
 install.packages("Lahman")
 library(Lahman)
-View(LahmanData)
+head(HallOfFame)
+head(People)
 
-left_join(LahmanData, newdata, by = "Name")
+combinedHOF <- left_join(HallOfFame, People, by = "playerID")
+
+combinedHOF %>% 
+  rename(Name = nameGiven)
+
+
 ```
 
