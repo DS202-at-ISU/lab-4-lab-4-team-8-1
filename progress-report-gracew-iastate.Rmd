@@ -17,8 +17,14 @@ library(tidyverse)
 library(dplyr)
 url <- "https://www.baseball-reference.com/awards/hof_2025.shtml"
 html <- read_html(url)
-newdata <- html %>% html_table(fill=TRUE)
-head(newdata)
+tables <- html %>% html_table(fill=TRUE)
+head(tables)
+
+data <- tables[[1]]
+actual_col_names <- data[1, ]
+colnames(data) <- make.names(actual_col_names, unique = TRUE)
+data <- data[-1, ]
+head(data, 3)
 
 install.packages("Lahman")
 library(Lahman)
@@ -27,9 +33,13 @@ head(People)
 
 combinedHOF <- left_join(HallOfFame, People, by = "playerID")
 
-combinedHOF %>% 
+combinedHOF <- combinedHOF %>% 
   rename(Name = nameGiven)
 
+combinedHOF$Name <- as.character(combinedHOF$Name)
+data$Name <- as.character(data$Name)
 
+HOFwith2025 <- right_join(combinedHOF, data, by = "Name")
+HOFwith2025
 ```
 
