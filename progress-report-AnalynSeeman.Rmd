@@ -1,0 +1,12 @@
+---
+title: "progress-report-AnalynSeeman"
+author: "Analyn Seeman"
+date: "2025-04-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
