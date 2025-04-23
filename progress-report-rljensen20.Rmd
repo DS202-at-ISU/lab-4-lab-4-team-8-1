@@ -3,3 +3,42 @@ title: "progress-report-rljensen20"
 output: html_document
 ---
 
+```{r}
+library(rvest)
+```
+```{r}
+url <- "https://en.wikipedia.org/wiki/2023_Baseball_Hall_of_Fame_balloting"
+html <- read_html(url)
+tables <- html %>% html_table(fill=TRUE)
+bbwaa <- tables[[3]]  # candidates on the BBWAA Ballot
+vet1 <- tables[[5]] # Early Baseball Era Committee
+vet2 <- tables[[6]] # Golden Days Era Committee
+bbwaa %>% head()
+```
+
+
+```{r}
+hof <- "https://bbwaa.com/23-hof/#votingtable"
+html <- read_html(hof)
+hof_tbl <- html %>% html_table()
+bbwaa <- hof_tbl[[1]]
+names(bbwaa)[1] <- "First Lastname"
+head(bbwaa)
+bbwaa <- bbwaa %>% mutate(
+  yearID = 2023,
+  votedBy = "BBWAA",
+  ballots = 389,
+  needed = 292,
+  inducted = ifelse(Votes>=292, "Y", "N"),
+  category = NA, # don't know yet
+  needed_note = NA # not sure what would go here
+) %>% rename(
+  votes = Votes
+) %>% select(-Percent, -`Years on ballot`)
+
+```
+
+
+
+```
+
