@@ -362,12 +362,44 @@ display: none;
 <pre class="r"><code>library(rvest)
 url &lt;- &quot;https://www.baseball-reference.com/awards/hof_2025.shtml&quot;
 html &lt;- read_html(url)
-html</code></pre>
-<pre><code>## {html_document}
-## &lt;html data-version=&quot;klecko-&quot; data-root=&quot;/home/br/build&quot; lang=&quot;en&quot; class=&quot;no-js&quot;&gt;
-## [1] &lt;head&gt;\n&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8 ...
-## [2] &lt;body class=&quot;br&quot;&gt;\n&lt;div id=&quot;wrap&quot;&gt;\n  \n  &lt;div id=&quot;header&quot; role=&quot;banner&quot;&gt; ...</code></pre>
-<pre class="r"><code>tables &lt;- html %&gt;% html_table(fill=TRUE)</code></pre>
+tables &lt;- html %&gt;% html_table(fill=TRUE)
+tables</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 29 × 39
+##    ``    ``          ``    ``    ``    ``    ``    ``    ``    ``    ``    ``   
+##    &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+##  1 Rk    Name        YoB   Votes %vote HOFm  HOFs  Yrs   WAR   WAR7  JAWS  Jpos 
+##  2 1     Ichiro Suz… 1st   393   99.7% 235   44    19    60.0  43.7  51.8  56.0 
+##  3 2     CC Sabathia 1st   342   86.8% 128   48    19    62.3  39.4  50.8  61.3 
+##  4 3     Billy Wagn… 10th  325   82.5% 107   24    16    27.7  19.8  23.7  31.6 
+##  5 4     Carlos Bel… 3rd   277   70.3% 126   52    20    70.0  44.4  57.2  58.0 
+##  6 5     Andruw Jon… 8th   261   66.2% 109   34    17    62.7  46.4  54.6  58.0 
+##  7 6     Chase Utley 2nd   157   39.8% 94    36    16    64.6  49.3  57.0  56.9 
+##  8 7     Alex Rodri… 4th   146   37.1% 390   77    22    117.4 64.3  90.8  55.4 
+##  9 8     Manny Rami… 9th   135   34.3% 226   69    19    69.3  39.9  54.6  53.5 
+## 10 9     Andy Petti… 7th   110   27.9% 128   44    18    60.2  34.1  47.2  61.3 
+## # ℹ 19 more rows
+## # ℹ 27 more variables: `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;,
+## #   `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;,
+## #   `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;,
+## #   `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;,
+## #   `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;,
+## #   `Pitching Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;, …
+## 
+## [[2]]
+## # A tibble: 3 × 40
+##   ``    ``       ``    ``    ``    ``    ``    ``    ``    ``    `Batting Stats`
+##   &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;          
+## 1 Rk    Name     Indu… HOFm  HOFs  Yrs   WAR   WAR7  JAWS  Jpos  G              
+## 2 1     Dick Al… as P… 99    39    15    58.7  45.8  52.3  56.1  1749           
+## 3 2     Dave Pa… as P… 125   42    19    40.1  37.3  38.7  56.0  2466           
+## # ℹ 29 more variables: `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;,
+## #   `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;,
+## #   `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;,
+## #   `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;, `Batting Stats` &lt;chr&gt;,
+## #   `Batting Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;,
+## #   `Pitching Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;,
+## #   `Pitching Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;, `Pitching Stats` &lt;chr&gt;, …</code></pre>
 </div>
 
 
