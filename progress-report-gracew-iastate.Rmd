@@ -15,9 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(rvest)
 url <- "https://www.baseball-reference.com/awards/hof_2025.shtml"
 html <- read_html(url)
-html
-
 tables <- html %>% html_table(fill=TRUE)
-
+tables
 ```
 
