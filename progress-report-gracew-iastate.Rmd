@@ -13,9 +13,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(rvest)
+library(tidyverse)
+library(dplyr)
 url <- "https://www.baseball-reference.com/awards/hof_2025.shtml"
 html <- read_html(url)
-tables <- html %>% html_table(fill=TRUE)
-tables
+newdata <- html %>% html_table(fill=TRUE)
+newdata
+
+install.packages("Lahman")
+library(Lahman)
+View(LahmanData)
+
+left_join(LahmanData, newdata, by = "Name")
 ```
 
