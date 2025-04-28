@@ -25,16 +25,33 @@ colnames(data) <- actual_col_names
 data <- data[-1, ]
 head(data, 3)
 
-combinedHOF <- left_join(HallOfFame, People, by = "playerID")
-
-ndata <- data$Name
-
-combinedHOF <- combinedHOF %>% mutate(
-  `First Lastname`=paste(`nameFirst`, `nameLast`)
+data <- data %>% select(Name, Votes) %>% mutate(
+  yearID = 2025,
+  votedBy = "BBWAA",
+  ballots = 394,
+  needed = 296,
+  inducted = ifelse(Votes>=296, "Y", "N"),
+  category = NA,
+  needed_note = NA
+) %>% rename(
+  votes = Votes
 )
 
-final <- combinedHOF %>% filter(`First Lastname` %in% ndata)
 
+People <- People %>% mutate(
+  Name =paste(`nameFirst`, `nameLast`)
+)
+
+ndata <- data$Name
+data$Name <- gsub("X-", "", ndata)
+
+ids <- People %>% filter(`First Lastname` %in% ndata) %>% select(Name, playerID)
+
+data2025 <- left_join(data, ids, by = "Name") %>% select(-Name)
+
+colnames(HallOfFame)
+colnames(data2025)
+
+final <- rbind(HallOfFame, data2025)
 View(final)
-
 ```
