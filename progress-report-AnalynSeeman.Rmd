@@ -12,44 +12,73 @@ knitr::opts_chunk$set(echo = TRUE)
 ## R Markdown
 
 ```{r}
+
 library(rvest)
 
-url <- "https://www.baseball-reference.com/awards/hof_2025.shtml"
+url <- "https://www.baseball-reference.com/awards/hof_2024.shtml"
 html <- read_html(url)
-tables <- html %>% html_table(fill=TRUE)
-tables[1]
-```
-
-```{r}
-library(Lahman)
-library(tidyverse)
-
-head(HallOfFame)
-head(People)
-
+tables <- html_table(html, fill = TRUE)
 data <- tables[[1]]
+
+```
+```{r}
+
 actual_col_names <- data[1, ]
 colnames(data) <- actual_col_names
 data <- data[-1, ]
-head(data, 3)
 
-combinedHOF <- left_join(HallOfFame, People, by = "playerID")
+```
 
-ndata <- data$Name
 
-combinedHOF <- combinedHOF %>% mutate(
-  `First Lastname`=paste(`nameFirst`, `nameLast`)
-)
+```{r}
+library(dplyr)
 
-final <- combinedHOF %>% filter(`First Lastname` %in% ndata)
-
-View(final)
+data <- data %>%
+  select(Name, Votes) %>%
+  mutate(
+    Votes = as.numeric(Votes),
+    Name = gsub("X-", "", Name)
+  )
 
 ```
 
 ```{r}
 
-write.csv(final, file="HallOfFame.csv", row.names = FALSE)
+library(Lahman)
+
+peopleneeded <- People %>%
+  mutate(Name = paste(nameFirst, nameLast)) %>%
+  select(playerID, Name)
+
+unmatched <- anti_join(data, peopleneeded, by = "Name")
+print(unmatched)
+
+data$Name <- iconv(data$Name, to = "ASCII//TRANSLIT")
+
+data_joined <- left_join(data, peopleneeded, by = "Name")
+
+hof_2024 <- data_joined %>%
+  mutate(
+    yearID = 2024,
+    votedBy = "BBWAA",
+    ballots = NA,  # Replace with actual number if known
+    needed = NA,   # Replace with actual number if known
+    inducted = ifelse(Votes >= 75, "Y", "N"),  # Assuming 75% is needed
+    category = "Player",
+    needed_note = NA
+  ) %>%
+  select(playerID, yearID, votedBy, ballots, needed, Votes, inducted, category, needed_note)
+
+HallOfFame_updated <- bind_rows(HallOfFame, hof_2024)
+
+write.csv(HallOfFame_updated, "HallOfFame.csv", row.names = FALSE)
+
+```
+
+
+```{r}
+
+
 
 ```
 
