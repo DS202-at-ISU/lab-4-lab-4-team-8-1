@@ -1,0 +1,57 @@
+---
+title: "progress-report-devon-k"
+output: html_document
+---
+
+```{r}
+library(rvest)
+
+url <- "https://www.baseball-reference.com/awards/hof_2025.shtml"
+html <- read_html(url)
+tables <- html %>% html_table(fill=TRUE)
+tables[1]
+```
+
+```{r}
+library(Lahman)
+library(tidyverse)
+
+head(HallOfFame)
+head(People)
+
+data <- tables[[1]]
+actual_col_names <- data[1, ]
+colnames(data) <- actual_col_names
+data <- data[-1, ]
+head(data, 3)
+
+data <- data %>% select(Name, Votes) %>% mutate(
+  yearID = 2025,
+  votedBy = "BBWAA",
+  ballots = 394,
+  needed = 296,
+  inducted = ifelse(Votes>=296, "Y", "N"),
+  category = NA,
+  needed_note = NA
+) %>% rename(
+  votes = Votes
+)
+
+
+People <- People %>% mutate(
+  Name =paste(`nameFirst`, `nameLast`)
+)
+
+ndata <- data$Name
+data$Name <- gsub("X-", "", ndata)
+
+ids <- People %>% filter(`First Lastname` %in% ndata) %>% select(Name, playerID)
+
+data2025 <- left_join(data, ids, by = "Name") %>% select(-Name)
+
+colnames(HallOfFame)
+colnames(data2025)
+
+final <- rbind(HallOfFame, data2025)
+View(final)
+```
