@@ -7,38 +7,89 @@ output: html_document
 library(rvest)
 ```
 ```{r}
-url <- "https://en.wikipedia.org/wiki/2023_Baseball_Hall_of_Fame_balloting"
-html <- read_html(url)
-tables <- html %>% html_table(fill=TRUE)
-bbwaa <- tables[[3]]  # candidates on the BBWAA Ballot
-vet1 <- tables[[5]] # Early Baseball Era Committee
-vet2 <- tables[[6]] # Golden Days Era Committee
-bbwaa %>% head()
+library(Lahman)
+```
+
+```{r}
+HallOfFame
 ```
 
 
 ```{r}
-hof <- "https://bbwaa.com/23-hof/#votingtable"
-html <- read_html(hof)
-hof_tbl <- html %>% html_table()
-bbwaa <- hof_tbl[[1]]
-names(bbwaa)[1] <- "First Lastname"
-head(bbwaa)
-bbwaa <- bbwaa %>% mutate(
-  yearID = 2023,
-  votedBy = "BBWAA",
-  ballots = 389,
-  needed = 292,
-  inducted = ifelse(Votes>=292, "Y", "N"),
-  category = NA, # don't know yet
-  needed_note = NA # not sure what would go here
-) %>% rename(
-  votes = Votes
-) %>% select(-Percent, -`Years on ballot`)
+url <- "https://www.baseball-reference.com/awards/hof_2025.shtml"
+html <- read_html(url)
+tables <- html_table(html)
+head(tables)
 
+
+data <- tables[[1]]
+actual_col_names <- data[1, ]
+colnames(data) <- make.names(actual_col_names, unique = TRUE)
+data <- data[-1, ]
+data
+
+names(data)[[2]] <- "Name"
+data
+```
+
+```{r}
+data_numeric <- data %>% 
+  mutate(
+    across(c(YoB, Votes, HOFm, HOFs, Yrs, WAR, WAR7,JAWS, Jpos,G,AB,R,H,HR,RBI,SB,BB,BA,
+             OBP, SLG, OPS, OPS., W, L, ERA, ERA., WHIP, G.1, GS, SV, IP, H.1, HR.1, BB.1, SO, 
+             ), parse_number)
+  ) 
+
+```
+
+```{r}
+data_cleaned <- data_numeric %>% 
+  mutate(
+    Name =  gsub("X-", "", Name)
+  )
+```
+
+
+```{r}
+library(dplyr)
+```
+
+
+```{r}
+people_needed_info <- People %>%
+  mutate(Name = paste(nameFirst, nameLast)) %>%
+  select(playerID, Name)
+
+```
+```{r}
+data_joined <- left_join(data_cleaned, people_needed_info, by = "Name")
+data_joined
+
+```
+ 
+```{r}
+hof_2024 <- data_joined %>%
+  mutate(
+    yearID = 2024,
+    votedBy = "BBWAA",
+    ballots = NA,  
+    needed = NA,   
+    inducted = ifelse(Votes >= 75, "Y", "N"), 
+    category = "Player",
+    needed_note = NA
+  ) %>%
+  select(playerID, yearID, votedBy, ballots, needed, Votes, inducted, category, needed_note)
+
+HallOfFame_updated <- bind_rows(HallOfFame, hof_2024)
+
+write.csv(HallOfFame_updated, "HallOfFame.csv", row.names = FALSE)
 ```
 
 
 
-```
+
+
+
+
+
 
